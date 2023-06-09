@@ -1,6 +1,9 @@
+import 'dart:io';
+
 import 'package:add_text_clone/editWindow.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:image_picker/image_picker.dart';
 
 void main() {
   runApp(const MyApp());
@@ -31,8 +34,6 @@ class MyHomePage extends StatefulWidget {
 }
 
 class _MyHomePageState extends State<MyHomePage> {
-  List<Widget> colorCircles = [];
-
   List<LinearGradient> gradientList = <LinearGradient>[
     LinearGradient(
       colors: [
@@ -109,6 +110,9 @@ class _MyHomePageState extends State<MyHomePage> {
   ];
 
   var brightnessMode = false;
+  List<Widget> colorCircles = [];
+
+  XFile? photo;
 
   @override
   void initState() {
@@ -136,23 +140,24 @@ class _MyHomePageState extends State<MyHomePage> {
       Colors.grey,
       Colors.blueGrey
     ]
-        .map((e) => InkWell(
-              borderRadius: BorderRadius.circular(60),
-              // radius: 100,
-              onTap: () {
-                nextScreen(
-                  context,
-                  Container(
-                    margin: EdgeInsets.all(5),
-                    decoration: BoxDecoration(color: e),
-                  ),
-                );
-              },
-              child: Container(
-                margin: EdgeInsets.all(5),
-                decoration: BoxDecoration(color: e, shape: BoxShape.circle),
+        .map((e) =>
+        InkWell(
+          borderRadius: BorderRadius.circular(60),
+          // radius: 100,
+          onTap: () {
+            nextScreen(
+              context,
+              Container(
+                // margin: EdgeInsets.all(5),
+                decoration: BoxDecoration(color: e),
               ),
-            ))
+            );
+          },
+          child: Container(
+            margin: EdgeInsets.all(5),
+            decoration: BoxDecoration(color: e, shape: BoxShape.circle),
+          ),
+        ))
         .toList();
 
     for (var element in gradientList) {
@@ -165,7 +170,7 @@ class _MyHomePageState extends State<MyHomePage> {
             Transform.rotate(
               angle: 1.57,
               child: Container(
-                margin: EdgeInsets.all(5),
+                // margin: EdgeInsets.all(5),
                 decoration: BoxDecoration(
                     borderRadius: BorderRadius.circular(5), gradient: element),
               ),
@@ -230,6 +235,9 @@ class _MyHomePageState extends State<MyHomePage> {
                 "Background",
                 style: TextStyle(fontSize: 17, fontWeight: FontWeight.bold),
               ),
+              Divider(
+                color: Colors.transparent,
+              ),
               SizedBox(
                 width: double.infinity,
                 height: 50,
@@ -241,46 +249,65 @@ class _MyHomePageState extends State<MyHomePage> {
                       ...colorCircles,
                       InkWell(
                         borderRadius: BorderRadius.circular(60),
-                        onTap: () => showModalBottomSheet(
-                            context: context,
-                            builder: (context) => ListView(
-                                    children: List.generate(
-                                  19,
-                                  (ind) => Row(
-                                    children: List.generate(
-                                      10,
-                                      (index) => InkWell(
-                                        borderRadius: BorderRadius.circular(60),
-                                        // radius: 100,
-                                        onTap: () {
-                                          nextScreen(
-                                            context,
-                                            Container(
-                                              height: MediaQuery.of(context)
-                                                  .size.width,width: MediaQuery
-                                                .of(context)
-                                                  .size.width,
-                                              margin: EdgeInsets.all(5),
-                                              decoration: BoxDecoration(
-                                                  color: colors[ind].withOpacity(
-                                                      double.parse("0.${index}5")),
-                                                  ),
-                                            ),
-                                          );
-                                        },
-                                        child: Container(
-                                          height: 29,
-                                          width: 29,
-                                          margin: EdgeInsets.all(5),
-                                          decoration: BoxDecoration(
-                                              color: colors[ind].withOpacity(
-                                                  double.parse("0.${index}5")),
-                                              shape: BoxShape.circle),
-                                        ),
-                                      ),
-                                    ),
-                                  ),
-                                ))),
+                        onTap: () =>
+                            showModalBottomSheet(
+                                context: context,
+                                builder: (context) =>
+                                    ListView(
+                                        children: List.generate(
+                                          19,
+                                              (ind) =>
+                                              Row(
+                                                children: List.generate(
+                                                  10,
+                                                      (index) =>
+                                                      InkWell(
+                                                        borderRadius: BorderRadius
+                                                            .circular(60),
+                                                        // radius: 100,
+                                                        onTap: () {
+                                                          Navigator.pop(
+                                                              context);
+
+                                                          nextScreen(
+                                                            context,
+                                                            Container(
+                                                              height: MediaQuery
+                                                                  .of(context)
+                                                                  .size
+                                                                  .width,
+                                                              width: MediaQuery
+                                                                  .of(context)
+                                                                  .size
+                                                                  .width,
+                                                              // margin: EdgeInsets.all(5),
+                                                              decoration: BoxDecoration(
+                                                                color: colors[ind]
+                                                                    .withOpacity(
+                                                                    double
+                                                                        .parse(
+                                                                        "0.${index}5")),
+                                                              ),
+                                                            ),
+                                                          );
+                                                        },
+                                                        child: Container(
+                                                          height: 29,
+                                                          width: 29,
+                                                          margin: EdgeInsets
+                                                              .all(5),
+                                                          decoration: BoxDecoration(
+                                                              color: colors[ind]
+                                                                  .withOpacity(
+                                                                  double.parse(
+                                                                      "0.${index}5")),
+                                                              shape: BoxShape
+                                                                  .circle),
+                                                        ),
+                                                      ),
+                                                ),
+                                              ),
+                                        ))),
                         child: Container(
                           margin: EdgeInsets.all(4),
                           // height: 30,
@@ -296,7 +323,8 @@ class _MyHomePageState extends State<MyHomePage> {
                         ),
                       )
                     ]),
-              ),
+              ), //colors              Divider(color: Colors.transparent,),
+
               SizedBox(
                 height: 50,
                 child: GridView(
@@ -308,7 +336,7 @@ class _MyHomePageState extends State<MyHomePage> {
                       SizedBox(
                         child: Padding(
                           padding:
-                              EdgeInsets.symmetric(vertical: 5, horizontal: 3),
+                          EdgeInsets.symmetric(vertical: 5, horizontal: 3),
                           child: OutlinedButton(
                             onPressed: () {},
                             child: Icon(
@@ -320,7 +348,78 @@ class _MyHomePageState extends State<MyHomePage> {
                         ),
                       )
                     ]),
-              )
+              ),
+              Divider(
+                color: Colors.transparent,
+              ),
+
+              Text(
+                "Pick Background Images\n",
+                style: TextStyle(fontSize: 17, fontWeight: FontWeight.bold),
+              ),
+              SizedBox(
+                width: double.infinity,
+                height: 120,
+                child: ButtonBar(
+                  alignment: MainAxisAlignment.spaceEvenly,
+                  children: [
+                    OutlinedButton(
+                        style: OutlinedButton.styleFrom(
+                            foregroundColor: Colors.grey.shade700,
+                            backgroundColor: Colors.grey.shade300,
+                            fixedSize: Size(170, 120)),
+                        onPressed: () async {
+                          photo = await ImagePicker()
+                              .pickImage(source: ImageSource.camera);
+                          if (photo != null) {
+                            nextScreen(
+                                context,
+                                Container(
+                                  // margin: EdgeInsets.all(5),
+                                    child: Image.file(
+                                      File(photo!.path),
+                                      fit: BoxFit.fill,
+                                    )));
+                          }
+                        },
+                        child: Column(
+                          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                          crossAxisAlignment: CrossAxisAlignment.center,
+                          children: [
+                            Icon(CupertinoIcons.camera),
+                            Text("Pick From Camera")
+                          ],
+                        )),
+                    OutlinedButton(
+                        style: OutlinedButton.styleFrom(
+                            foregroundColor: Colors.grey.shade700,
+                            backgroundColor: Colors.grey.shade300,
+                            fixedSize: Size(170, 120)),
+                        onPressed: () async {
+                          photo = await ImagePicker()
+                              .pickImage(source: ImageSource.gallery);
+                          if (photo != null) {
+                            nextScreen(
+                                context,
+                                Container(
+                                  // margin: EdgeInsets.all(5),
+                                    child: Image.file(
+                                      File(photo!.path),
+                                      fit: BoxFit.cover,
+                                    )));
+                          }
+                        },
+                        child: Column(
+                          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                          crossAxisAlignment: CrossAxisAlignment.center,
+                          children: [
+                            Icon(CupertinoIcons.photo),
+                            Text("Pick From Gallery")
+                          ],
+                        )),
+                  ],
+                ),
+              ), //gradients
             ],
           ),
         ));
@@ -328,6 +427,18 @@ class _MyHomePageState extends State<MyHomePage> {
 }
 
 nextScreen(BuildContext contex, Widget square) {
-  Navigator.of(contex).push(
-      MaterialPageRoute(builder: (context) => EditWindow(square: square)));
+  Navigator.of(contex).push(MaterialPageRoute(
+      builder: (context) =>
+          EditWindow(
+              square: SizedBox(
+                height: MediaQuery
+                    .of(context)
+                    .size
+                    .width,
+                width: MediaQuery
+                    .of(context)
+                    .size
+                    .width,
+                child: square,
+              ))));
 }

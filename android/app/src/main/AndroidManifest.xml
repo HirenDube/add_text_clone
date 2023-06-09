@@ -2,9 +2,9 @@
     <uses-permission android:name="android.permission.WRITE_EXTERNAL"/>
     <uses-permission android:name="android.permission.READ_EXTERNAL"/>
     <application
-        android:label="add_text_clone"
+        android:label="Add Text: Text on Photo Editor"
         android:name="${applicationName}"
-        android:icon="@mipmap/ic_launcher">
+        android:icon="@mipmap/launcher_icon">
         <activity
             android:name=".MainActivity"
             android:exported="true"
