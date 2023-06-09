@@ -1,11 +1,15 @@
 // ignore_for_file: must_be_immutable
 
+import 'package:add_text_clone/Model%20Class/layerStoreRoom.dart';
+import 'package:add_text_clone/main.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
+import 'package:hive/hive.dart';
 import 'package:image_gallery_saver/image_gallery_saver.dart';
 import 'package:screenshot/screenshot.dart';
 
+import 'Controller/Controller Class.dart';
 import 'buildPositionedTextWidget.dart';
 
 class EditWindow extends StatefulWidget {
@@ -23,16 +27,32 @@ class _EditWindowState extends State<EditWindow> {
   List<Widget> layers = [];
   List<String> textLayers = [];
 
-  double dx = 10,
-      dy = 10;
+  double dx = 10, dy = 10;
+
+  @override
+  void dispose() {
+    // TODO: implement dispose
+    super.dispose();
+    Hive.close();
+  }
 
   @override
   void initState() {
     super.initState();
     // TODO: implement initState
-    layers = [
-      widget.square,
-    ];
+    LayerStorage obj1 = HiveController.getLayer;
+
+    if (obj1.newProject) {
+      layers = [
+        widget.square,
+      ];
+    } else if (!obj1.newProject) {
+      List<Widget> progress = obj1.storedLayer;
+      layers = [
+        widget.square,
+      ];
+      layers.addAll(progress);
+    }
   }
 
   @override
@@ -64,8 +84,7 @@ class _EditWindowState extends State<EditWindow> {
                           String val = "";
                           showDialog(
                               context: context,
-                              builder: (context) =>
-                                  AlertDialog(
+                              builder: (context) => AlertDialog(
                                     title: SizedBox(
                                       width: 250,
                                       child: TextField(
@@ -77,7 +96,7 @@ class _EditWindowState extends State<EditWindow> {
                                       ),
                                     ),
                                     actionsAlignment:
-                                    MainAxisAlignment.spaceEvenly,
+                                        MainAxisAlignment.spaceEvenly,
                                     actions: [
                                       OutlinedButton(
                                           onPressed: () {
@@ -124,14 +143,8 @@ class _EditWindowState extends State<EditWindow> {
               Screenshot(
                 controller: imageSaver,
                 child: SizedBox(
-                    height: MediaQuery
-                        .of(context)
-                        .size
-                        .width,
-                    width: MediaQuery
-                        .of(context)
-                        .size
-                        .width,
+                    height: MediaQuery.of(context).size.width,
+                    width: MediaQuery.of(context).size.width,
                     child: Stack(children: layers)),
               ),
               const SizedBox(
@@ -165,27 +178,29 @@ class _EditWindowState extends State<EditWindow> {
                                   String val = "";
                                   showDialog(
                                       context: context,
-                                      builder: (context) =>
-                                          AlertDialog(
+                                      builder: (context) => AlertDialog(
                                             title: SizedBox(
                                               width: 250,
                                               child: TextField(
                                                 onChanged: (val1) {
                                                   val = val1;
                                                 },
-                                                decoration: const InputDecoration(
-                                                    labelText: "Enter Text : "),
+                                                decoration:
+                                                    const InputDecoration(
+                                                        labelText:
+                                                            "Enter Text : "),
                                               ),
                                             ),
                                             actionsAlignment:
-                                            MainAxisAlignment.spaceEvenly,
+                                                MainAxisAlignment.spaceEvenly,
                                             actions: [
                                               OutlinedButton(
                                                   onPressed: () {
-                                                    layers.add(BuildPostionedText(
-                                                        val: val,
-                                                        position:
-                                                        Offset(dx, dy)));
+                                                    layers.add(
+                                                        BuildPostionedText(
+                                                            val: val,
+                                                            position: Offset(
+                                                                dx, dy)));
 
                                                     setState(() {
                                                       Navigator.pop(context);
@@ -307,7 +322,18 @@ class _EditWindowState extends State<EditWindow> {
                           child: Row(
                             children: [
                               TextButton(
-                                  onPressed: () {},
+                                  onPressed: () {
+                                    layers.remove(widget.square);
+                                    LayerStorage tempOb = LayerStorage()
+                                      ..storedLayer = layers
+                                      ..newProject = false;
+                                    HiveController.storeLayer = tempOb;
+                                    Navigator.push(
+                                        context,
+                                        MaterialPageRoute(
+                                            builder: (context) =>
+                                                MyHomePage()));
+                                  },
                                   child: const Column(
                                     children: [
                                       Icon(

@@ -1,11 +1,20 @@
 import 'dart:io';
 
+import 'package:add_text_clone/Model%20Class/layerStoreRoom.dart';
 import 'package:add_text_clone/editWindow.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:hive_flutter/adapters.dart';
 import 'package:image_picker/image_picker.dart';
 
-void main() {
+var box;
+
+Future<void> main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  Hive.close();
+  await Hive.initFlutter();
+  Hive.registerAdapter(LayerStorageAdapter());
+  box = await Hive.openBox<LayerStorage>("progressStorage");
   runApp(const MyApp());
 }
 
